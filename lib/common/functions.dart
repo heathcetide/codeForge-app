@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:demo_project/common/local_storage.dart';
@@ -98,4 +99,54 @@ Future<Uint8List> getCompressedImage(
     quality: quality,
   );
   return result;
+}
+
+///  示例：防抖用法
+///   final debounceExample = () {
+///     print('Debounced action triggered');
+///   };
+///   final debouncedFunction = debounceExample.debounce(1000); // 防抖 1000ms
+///   debouncedFunction(); // 第一次触发
+///   debouncedFunction(); // 第二次触发，前一次会被取消
+
+// 扩展 `Function`，添加防抖（debounce）功能
+extension DebounceExtension on Function {
+  // 防抖功能：在调用后的 `milliseconds` 时间内，如果事件再次触发，则取消前一个调用。
+  // 只有在指定的时间间隔没有触发事件时才会执行目标操作。
+  void Function() debounce([int milliseconds = 500]) {
+    Timer? _debounceTimer; // 定时器，用于取消上一次的调用并重新计时
+    return () {
+      if (_debounceTimer?.isActive ?? false) _debounceTimer?.cancel(); // 如果定时器仍然活动，取消之前的调用
+      _debounceTimer = Timer(Duration(milliseconds: milliseconds), () {
+        this();
+      }); // 设定新的定时器，并执行目标函数
+    };
+  }
+}
+
+/// 示例：节流用法
+///final throttleExample = () {
+///  print('Throttled action triggered');
+///};
+///final throttledFunction = throttleExample.throttle(2000); // 节流 2000ms
+///throttledFunction(); // 第一次触发
+///throttledFunction(); // 第二次触发，节流期间不会再次触发
+
+// 扩展 `Function`，添加节流（throttle）功能
+extension ThrottleExtension on Function {
+  // 节流功能：在 `milliseconds` 时间内，只允许执行一次目标操作
+  // 每隔设定的时间间隔执行一次函数。
+  void Function() throttle([int milliseconds = 500]) {
+    bool _isAllowed = true; // 标志位，判断是否允许函数执行
+    Timer? _throttleTimer; // 定时器，用于控制执行频率
+    return () {
+      if (!_isAllowed) return; // 如果不允许执行，直接返回
+      _isAllowed = false; // 设置标志位为不允许执行
+      this(); // 执行目标函数
+      _throttleTimer?.cancel(); // 取消上一次的定时器
+      _throttleTimer = Timer(Duration(milliseconds: milliseconds), () {
+        _isAllowed = true; // 在指定时间后，允许执行函数
+      });
+    };
+  }
 }

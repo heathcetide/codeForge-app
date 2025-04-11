@@ -1,9 +1,7 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:demo_project/widgets/bonss_imagebox.dart';
-import 'package:demo_project/widgets/bonss_image_view.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 

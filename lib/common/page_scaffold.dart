@@ -76,14 +76,6 @@ class _PageScaffoldState extends State<PageScaffold> {
   }
 }
 
-// Widget getPopLeading(context) {
-//   return IconButton(
-//     onPressed: () {
-//       Navigator.maybePop(context);
-//     },
-//     icon: const Icon(Icons.arrow_back_ios_new),
-//   );
-// }
 // 修改 getPopLeading 函数，增加 popTo 参数
 Widget getPopLeading(context, {String? popTo}) {
   return IconButton(

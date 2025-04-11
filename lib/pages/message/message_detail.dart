@@ -1,38 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:demo_project/widgets/bonss_avatar.dart';
-import 'package:demo_project/pages/pageScaffold.dart';
+import 'package:demo_project/common/page_scaffold.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'dart:io';
 
-class MessagePage extends StatefulWidget {
-  final Map<String, dynamic> friend;
-  const MessagePage({super.key, required this.friend});
+class NotificationDetailPage extends StatefulWidget {
+  final Map<String, dynamic> notification;  // 接收通知数据
+  const NotificationDetailPage({super.key, required this.notification});
 
   @override
-  State<MessagePage> createState() => _MessagePageState();
+  State<NotificationDetailPage> createState() => _MessagePageState();
 }
 
-class _MessagePageState extends State<MessagePage> {
+class _MessagePageState extends State<NotificationDetailPage> {
   final TextEditingController _messageController = TextEditingController();
   final List<Map<String, dynamic>> _messages = [];
+
   @override
   void initState() {
     super.initState();
+    // 在初始化时根据传入的通知数据，生成模拟的聊天记录
     _messages.addAll([
       {
         "uid": 1,
-        "name": widget.friend['name'], // 现在可以正常访问
-        "avatar": widget.friend['avatar'],
-        "content": "你好啊！",
+        "name": widget.notification['title'], // 使用通知的标题作为发送者名称
+        "avatar": "https://cetide-1325039295.cos.ap-chengdu.myqcloud.com/d6e4c5d9-299f-4cf3-9472-6e53f58fe3b4.jpg", // 你可以根据需求使用实际的头像 URL
+        "content": widget.notification['content'], // 使用通知的内容作为聊天内容
         "isMe": false,
         "type": "text",
       },
       {
         "uid": 2,
         "name": "我",
-        "avatar":
-            "https://cetide-1325039295.cos.ap-chengdu.myqcloud.com/d6e4c5d9-299f-4cf3-9472-6e53f58fe3b4.jpg",
-        "content": "你好，${widget.friend['name']}！今天的作业写完了吗？",
+        "avatar": "https://cetide-1325039295.cos.ap-chengdu.myqcloud.com/d6e4c5d9-299f-4cf3-9472-6e53f58fe3b4.jpg",
+        "content": "你好，${widget.notification['title']}！我看到了你的通知。",
         "isMe": true,
         "type": "text",
       },
@@ -48,8 +49,7 @@ class _MessagePageState extends State<MessagePage> {
       _messages.add({
         "uid": 2,
         "name": "我",
-        "avatar":
-            "https://cetide-1325039295.cos.ap-chengdu.myqcloud.com/d6e4c5d9-299f-4cf3-9472-6e53f58fe3b4.jpg",
+        "avatar": "https://cetide-1325039295.cos.ap-chengdu.myqcloud.com/d6e4c5d9-299f-4cf3-9472-6e53f58fe3b4.jpg",
         "content": content ?? _messageController.text.trim(),
         "isMe": true,
         "type": type,
@@ -64,7 +64,6 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   Future<void> _pickImage() async {
-    // Replace with Flutter's showModalBottomSheet and manual image selection without third-party library.
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -77,7 +76,6 @@ class _MessagePageState extends State<MessagePage> {
                 leading: Icon(Icons.photo),
                 title: Text('选择图片'),
                 onTap: () async {
-                  // For simplicity, assume a fixed image file path.
                   Navigator.pop(context);
                   String imagePath = '/path/to/local/image.jpg';
                   _sendImage(File(imagePath));
@@ -95,11 +93,11 @@ class _MessagePageState extends State<MessagePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "${widget.friend['name']}",
+          "${widget.notification['title']}",
           style: TextStyle(
-            fontSize: 18, // 和好友列表的标题一致的字体大小
-            fontWeight: FontWeight.bold, // 和好友列表保持一致
-            color: Color.fromARGB(255, 91, 107, 146), // 设置颜色
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Color.fromARGB(255, 91, 107, 146),
           ),
         ),
         leading: IconButton(
@@ -213,7 +211,7 @@ class ChatBubble extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment:
-            isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
           if (!isMe)
             Container(
@@ -226,7 +224,7 @@ class ChatBubble extends StatelessWidget {
           Flexible(
             child: Column(
               crossAxisAlignment:
-                  isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
               children: [
                 if (!isMe)
                   Text(
@@ -248,20 +246,20 @@ class ChatBubble extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12.0),
                   ),
                   child:
-                      type == "text"
-                          ? Text(
-                            content,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: isMe ? Colors.white : Colors.black87,
-                            ),
-                          )
-                          : Image.file(
-                            File(content),
-                            fit: BoxFit.cover,
-                            width: 150,
-                            height: 150,
-                          ),
+                  type == "text"
+                      ? Text(
+                    content,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: isMe ? Colors.white : Colors.black87,
+                    ),
+                  )
+                      : Image.file(
+                    File(content),
+                    fit: BoxFit.cover,
+                    width: 150,
+                    height: 150,
+                  ),
                 ),
               ],
             ),

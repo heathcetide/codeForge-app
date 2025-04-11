@@ -2,19 +2,23 @@ import 'dart:convert';
 import 'package:get_storage/get_storage.dart';
 
 class LocalStorage {
-  static final GetStorage _storage = GetStorage();
 
   // 用户
   static _LS<String> user_token = _LS('user_token');
-  static _LS<String> user_uid = _LS('user_uid');
-  static _LS<String> user_nickName = _LS('user_nickName');
+
   static _LS<String> user_avatar = _LS('user_avatar');
   static _LS<String> user_userName = _LS('user_userName');
-  static _LS<String> user_mobile = _LS('user_mobile');
-  static _LS<String> user_college = _LS('user_college');
-  static _LS<String> user_gender = _LS('user_gender');
-  static _LS<String> user_dormBuilding = _LS('user_dormBuilding');
-  static _LS<String> user_dormNumber = _LS('user_dormNumber');
+  static _LS<String> user_email = _LS('email');
+  static _LS<String> user_phone = _LS('phone');
+  static _LS<String> user_address = _LS('address');
+  static _LS<String> user_points = _LS('points');
+  static _LS<String> user_articleCount = _LS('articleCount');
+  static _LS<String> user_activityCount = _LS('activityCount');
+  static _LS<String> user_gender = _LS('gender');
+  static _LS<String> user_bio = _LS('bio');
+  static _LS<String> user_birthday = _LS('birthday');
+  static _LS<String> user_lastLoginTime = _LS('lastLoginTime');
+  static _LS<String> user_createdAt = _LS('createdAt');
 
   // 课表
   static _LS<String> timetable_college = _LS('timetable_college');

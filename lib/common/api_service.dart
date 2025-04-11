@@ -1,18 +1,17 @@
 import 'dart:typed_data';
+import 'package:demo_project/common/local_storage.dart';
 import 'package:dio/dio.dart';
 import 'package:demo_project/common/loading_queue.dart';
 
 class ApiResponse<T> {
-  final bool success;
   final T? data;
   final String? message;
   final int? code;
 
-  ApiResponse({required this.success, this.data, this.message, this.code});
+  ApiResponse({this.data, this.message, this.code});
 
   factory ApiResponse.fromJson(Map<String, dynamic> json) {
     return ApiResponse(
-      success: json['code'] == 0,
       data: json['data'],
       message: json['message'] ?? json['msg'],
       code: json['code'],
@@ -27,7 +26,7 @@ class ApiService {
   late final Dio _dio;
   final LoadingQueue _loadingQueue = LoadingQueue();
 
-  final String baseUrl = 'https://your-api-base-url.com'; // 替换为你的基础URL
+  final String baseUrl = 'http://192.168.188.80:8080'; // 替换为你的基础URL
 
   ApiService._internal() {
     _dio = Dio(
@@ -74,7 +73,7 @@ class ApiService {
   // 获取存储的token
   String? _getToken() {
     // 从本地存储获取token的逻辑
-    return null;
+    return LocalStorage.user_token.get();
   }
 
   // 统一的错误处理
@@ -126,7 +125,6 @@ class ApiService {
       return ApiResponse<T>.fromJson(response.data);
     } on DioException catch (e) {
       return ApiResponse(
-        success: false,
         message: e.message,
         code: e.response?.statusCode,
       );
@@ -149,7 +147,6 @@ class ApiService {
       return ApiResponse<T>.fromJson(response.data);
     } on DioException catch (e) {
       return ApiResponse(
-        success: false,
         message: e.message,
         code: e.response?.statusCode,
       );
@@ -172,7 +169,6 @@ class ApiService {
       return ApiResponse<T>.fromJson(response.data);
     } on DioException catch (e) {
       return ApiResponse(
-        success: false,
         message: e.message,
         code: e.response?.statusCode,
       );
@@ -195,7 +191,6 @@ class ApiService {
       return ApiResponse<T>.fromJson(response.data);
     } on DioException catch (e) {
       return ApiResponse(
-        success: false,
         message: e.message,
         code: e.response?.statusCode,
       );
@@ -217,7 +212,6 @@ class ApiService {
       return ApiResponse<T>.fromJson(response.data);
     } on DioException catch (e) {
       return ApiResponse(
-        success: false,
         message: e.message,
         code: e.response?.statusCode,
       );
@@ -236,10 +230,9 @@ class ApiService {
         options: Options(responseType: ResponseType.bytes),
         onReceiveProgress: onReceiveProgress,
       );
-      return ApiResponse(success: true, data: response.data);
+      return ApiResponse(data: response.data);
     } on DioException catch (e) {
       return ApiResponse(
-        success: false,
         message: e.message,
         code: e.response?.statusCode,
       );

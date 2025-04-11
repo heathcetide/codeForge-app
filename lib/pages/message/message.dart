@@ -1,63 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:demo_project/widgets/bonss_avatar.dart';
-import 'package:demo_project/pages/pageScaffold.dart';
+import 'package:demo_project/common/page_scaffold.dart';
 import 'package:demo_project/pages/message/message_detail.dart';
 
-class MessageListPage extends StatefulWidget {
-  const MessageListPage({super.key});
+class NotificationCenterPage extends StatefulWidget {
+  const NotificationCenterPage({super.key});
 
   @override
-  State<MessageListPage> createState() => _MessageListPageState();
+  State<NotificationCenterPage> createState() => _NotificationCenterPageState();
 }
 
-class _MessageListPageState extends State<MessageListPage> {
-  final TextEditingController _searchController = TextEditingController();
-  final List<Map<String, dynamic>> _friends = [];
+class _NotificationCenterPageState extends State<NotificationCenterPage> {
+  // 模拟通知数据
+  final List<Map<String, dynamic>> _notifications = [];
   String _searchText = "";
 
   @override
   void initState() {
     super.initState();
-    _friends.addAll([
+    _notifications.addAll([
       {
-        "uid": 1,
-        "name": "同学一号",
-        "avatar": "https://book.flutterchina.club/assets/img/logo.png",
-        "message": "文字文字！！！！！",
+        "id": 1,
+        "title": "系统通知",
+        "content": "您有一条新的系统消息。",
         "time": "12:02",
-        "unreadCount": 2,
+        "unread": true,
       },
       {
-        "uid": 2,
-        "name": "同学二号",
-        "avatar": "https://book.flutterchina.club/assets/img/logo.png",
-        "message": "文字文字！！！！！",
+        "id": 2,
+        "title": "活动通知",
+        "content": "别错过我们的最新活动，立即报名！",
         "time": "昨天 19:32",
-        "unreadCount": 0,
+        "unread": false,
       },
       {
-        "uid": 3,
-        "name": "同学三号",
-        "avatar": "https://book.flutterchina.club/assets/img/logo.png",
-        "message": "文字文字！！！！！",
+        "id": 3,
+        "title": "系统更新",
+        "content": "系统将在明天进行维护，请提前做好准备。",
         "time": "昨天 15:45",
-        "unreadCount": 0,
+        "unread": false,
       },
       {
-        "uid": 4,
-        "name": "同学四号",
-        "avatar": "https://book.flutterchina.club/assets/img/logo.png",
-        "message": "文字文字！！！！！",
+        "id": 4,
+        "title": "提醒通知",
+        "content": "您的账户存在异常登录行为，请及时处理。",
         "time": "昨天 11:02",
-        "unreadCount": 0,
+        "unread": true,
       },
       {
-        "uid": 5,
-        "name": "同学五号",
-        "avatar": "https://book.flutterchina.club/assets/img/logo.png",
-        "message": "文字文字！！！！！",
+        "id": 5,
+        "title": "促销活动",
+        "content": "超值促销活动正在进行，赶快参与吧！",
         "time": "15:12",
-        "unreadCount": 3,
+        "unread": true,
       },
     ]);
   }
@@ -65,53 +60,29 @@ class _MessageListPageState extends State<MessageListPage> {
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
-      title: const Text("聊天列表"),
+      title: const Text("消息"),
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _searchController,
-              onChanged: (value) {
-                setState(() {
-                  _searchText = value.trim();
-                });
-              },
-              decoration: InputDecoration(
-                hintText: "搜索",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                prefixIcon: const Icon(Icons.search),
-              ),
-            ),
-          ),
           Expanded(
             child: ListView.builder(
-              itemCount: _friends.length,
+              itemCount: _notifications.length,
               itemBuilder: (context, index) {
-                final friend = _friends[index];
-                if (_searchText.isNotEmpty &&
-                    !friend['name'].toLowerCase().contains(
-                      _searchText.toLowerCase(),
-                    )) {
-                  return Container();
-                }
+                final notification = _notifications[index];
+
                 return ListTile(
-                  leading: Container(
-                    width: 48,
-                    height: 48,
-                    child: Avatar(friend['avatar'], name: friend['name']),
+                  leading: Icon(
+                    Icons.notifications,
+                    color: notification['unread'] ? Colors.red : Colors.grey,
                   ),
                   title: Text(
-                    friend['name'],
-                    style: const TextStyle(
+                    notification['title'],
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   subtitle: Text(
-                    friend['message'],
+                    notification['content'],
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(color: Colors.grey[600]),
@@ -120,10 +91,10 @@ class _MessageListPageState extends State<MessageListPage> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        friend['time'],
+                        notification['time'],
                         style: TextStyle(fontSize: 12, color: Colors.grey[500]),
                       ),
-                      if (friend['unreadCount'] > 0)
+                      if (notification['unread'])
                         Container(
                           margin: const EdgeInsets.only(top: 4),
                           padding: const EdgeInsets.symmetric(
@@ -135,9 +106,7 @@ class _MessageListPageState extends State<MessageListPage> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
-                            friend['unreadCount'] > 99
-                                ? '99+'
-                                : '${friend['unreadCount']}',
+                            '新',
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 10,
@@ -147,10 +116,11 @@ class _MessageListPageState extends State<MessageListPage> {
                     ],
                   ),
                   onTap: () {
+                    // 这里跳转到详细的通知页面
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => MessagePage(friend: friend),
+                        builder: (context) => NotificationDetailPage(notification: notification),
                       ),
                     );
                   },
